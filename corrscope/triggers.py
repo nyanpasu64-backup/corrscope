@@ -326,12 +326,6 @@ def validate_param(self, key: str, begin: float, end: float) -> None:
         raise CorrError(f"Invalid {key}={value} (should be within [{begin}, {end}])")
 
 
-@attr.dataclass(slots=True)
-class OffsetArray:
-    arr: np.ndarray
-    center: int
-
-
 @register_trigger(CorrelationTriggerConfig)
 class CorrelationTrigger(MainTrigger):
     """
