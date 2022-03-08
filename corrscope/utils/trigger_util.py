@@ -37,15 +37,15 @@ def get_period(
         - See get_min_period() docstring.
 
     Return value:
-    - Returns 0 if period cannot be estimated.
-        This is a good placeholder value
-        since it causes buffers/etc. to be basically not updated.
+    - Returns UNKNOWN_PERIOD (0) if period cannot be estimated.
+        This is a good placeholder value since it causes buffers/etc. to be basically
+        not updated.
     """
     UNKNOWN_PERIOD = 0
 
     N = len(data)
 
-    # If no input, return period of 1.
+    # If no input, return period of 0.
     if np.max(np.abs(data)) < MIN_AMPLITUDE:
         return UNKNOWN_PERIOD
 
