@@ -15,7 +15,8 @@ def correlate_valid(buffer: np.ndarray, kernel: np.ndarray) -> np.ndarray:
 
     # Taken from scipy fftconvolve()
 
-    out_nsamp = len(buffer) - len(kernel) + 1
+    kernel_support = len(kernel) - 1
+    out_nsamp = len(buffer) - kernel_support
 
     # fft_nsamp = 1 << (out_nsamp - 1).bit_length()
     fft_nsamp = next_fast_len(len(buffer))
@@ -25,7 +26,13 @@ def correlate_valid(buffer: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     sp1 = np.fft.rfft(buffer, fft_nsamp)
     # Already reversed above.
     sp2 = np.fft.rfft(kernel, fft_nsamp)
-    ret = np.fft.irfft(sp1 * sp2, fft_nsamp)[:out_nsamp].copy()
+
+    # Don't ask why. I don't know either.
+    ret = (
+        np.fft.irfft(sp1 * sp2, fft_nsamp)
+            [kernel_support : kernel_support + out_nsamp]
+            .copy()
+    )
 
     return ret
 
