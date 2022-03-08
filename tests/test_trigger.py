@@ -16,7 +16,6 @@ from corrscope.triggers import (
     PerFrameCache,
     ZeroCrossingTriggerConfig,
     SpectrumConfig,
-    correlate_data,
     correlate_spectrum,
 )
 from corrscope.wave import Wave
@@ -35,7 +34,7 @@ def trigger_template(**kwargs) -> CorrelationTriggerConfig:
 
 
 @fixture
-@parametrize("trigger_diameter", [None, 0.5])
+@parametrize("trigger_diameter", [0.5, 1.0])
 @parametrize("pitch_tracking", [None, SpectrumConfig()])
 @parametrize("slope_strength", [0, 100])
 @parametrize("sign_strength", [0, 1])
@@ -241,7 +240,7 @@ def test_post_trigger_radius():
 # Test pitch-tracking (spectrum)
 
 
-@parametrize("correlate", [correlate_data, correlate_spectrum])
+@parametrize("correlate", [correlate_spectrum])
 def test_correlate_offset(correlate):
     """
     Catches bug where writing N instead of Ncorr

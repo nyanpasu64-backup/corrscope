@@ -288,7 +288,7 @@ class CorrelationTriggerConfig(
     buffer_falloff: float = 0.5
 
     # Maximum distance to move (in terms of trigger_ms/trigger_samp)
-    trigger_diameter: Optional[float] = 0.5
+    trigger_diameter: float = 0.5
 
     # Maximum distance to move (in terms of estimated wave period)
     trigger_radius_periods: Optional[float] = 1.5
