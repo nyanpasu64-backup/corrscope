@@ -94,7 +94,7 @@ def test_trigger(trigger_cfg, is_odd: bool, post_trigger):
             offset = trigger.get_trigger(x, PerFrameCache()).result
             assert offset == x0, offset
         if plot:
-            ax.plot(trigger._buffer, label=str(i))
+            ax.plot(trigger._corr_kernel, label=str(i))
             ax.grid()
 
     if plot:
