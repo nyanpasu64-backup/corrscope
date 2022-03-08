@@ -12,8 +12,10 @@ if TYPE_CHECKING:
 # 0 = no amplification (estimated period too short).
 # 1 = full area compensation (estimated period too long).
 EDGE_COMPENSATION = 0.9
-
 MAX_AMPLIFICATION = 2
+
+# Return value of get_period.
+UNKNOWN_PERIOD = 0
 
 
 # get_trigger()
@@ -41,8 +43,6 @@ def get_period(
         This is a good placeholder value since it causes buffers/etc. to be basically
         not updated.
     """
-    UNKNOWN_PERIOD = 0
-
     N = len(data)
 
     # If no input, return period of 0.

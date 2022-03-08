@@ -11,12 +11,13 @@ from corrscope.spectrum import SpectrumConfig, DummySpectrum, LogFreqSpectrum
 from corrscope.util import find, obj_name, iround
 from corrscope.utils.trigger_util import (
     get_period,
+    UNKNOWN_PERIOD,
     normalize_buffer,
     lerp,
     MIN_AMPLITUDE,
     abs_max,
 )
-from corrscope.utils.windows import leftpad, midpad, rightpad, gaussian_or_zero
+from corrscope.utils.windows import midpad, gaussian_or_zero
 from corrscope.wave_common import f32
 
 if TYPE_CHECKING:
@@ -456,7 +457,7 @@ class CorrelationTrigger(MainTrigger):
         data -= np.add.reduce(data) / self.L
 
         # Use period to recompute slope finder (if enabled) and restrict trigger
-        # diameter (TODO use buffer_falloff).
+        # diameter.
         period = get_period(data, self.subsmp_per_s, self.cfg.max_freq, self)
         cache.period = period * stride
 
@@ -482,13 +483,15 @@ class CorrelationTrigger(MainTrigger):
         corr_kernel += self._edge_finder
         corr_kernel += slope_finder
 
-        # Calculate correlation
-        if cfg.trigger_radius_periods:
-            radius = round(period * cfg.trigger_radius_periods)
+        # Don't pick peaks more than `period * trigger_radius_periods` away from the
+        # center.
+        if cfg.trigger_radius_periods and period != UNKNOWN_PERIOD:
+            trigger_radius = round(period * cfg.trigger_radius_periods)
         else:
-            radius = None
+            trigger_radius = None
 
-        peak_offset = correlate_valid(data, corr_kernel, radius)
+        # Find correlation peak.
+        peak_offset = correlate_valid(data, corr_kernel, trigger_radius)
         trigger = begin + stride_A + (stride * peak_offset)
 
         del data
